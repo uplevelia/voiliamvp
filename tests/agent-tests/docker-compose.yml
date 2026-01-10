@@ -1,0 +1,99 @@
+version: '3.8'
+
+# SECURE VERSION - All security vulnerabilities fixed
+# Changes:
+# - Removed hardcoded credentials (use .env file)
+# - Fixed dangerous filesystem mount
+# - Added security best practices
+
+services:
+  voilia-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Security fix: Use .env file for credentials
+      DATABASE_URL: ${DATABASE_URL}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    volumes:
+      # Security fix: Only mount specific directories needed, not entire filesystem
+      - ./tmp:/tmp:rw
+      - ./uploads:/uploads:rw
+      - ./renders:/renders:rw
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    # Security: Run as non-root user
+    user: "${UID:-1000}:${GID:-1000}"
+    # Security: Read-only root filesystem
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/tmp
+
+  voilia-worker:
+    build: .
+    command: celery -A worker worker --loglevel=info
+    environment:
+      # Security fix: Use .env file for credentials
+      DATABASE_URL: ${DATABASE_URL}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    volumes:
+      # Security fix: Only mount specific directories, not root filesystem
+      - ./tmp:/tmp:rw
+      - ./renders:/renders:rw
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    # Security: Run as non-root user
+    user: "${UID:-1000}:${GID:-1000}"
+    # Security: Read-only root filesystem
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/tmp
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      # Security fix: Use .env file for password
+      POSTGRES_DB: ${POSTGRES_DB:-voilia}
+      POSTGRES_USER: ${POSTGRES_USER:-voilia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      # Persist database data
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    # Security: Limit resources
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    # Security: Limit resources
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+volumes:
+  postgres_data:
+  redis_data:

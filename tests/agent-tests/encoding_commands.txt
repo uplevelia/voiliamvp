@@ -1,0 +1,22 @@
+# FFmpeg commands to optimize for VOILIA CPU-based rendering
+
+# Command 1: User wants to create web-optimized video (currently slow)
+ffmpeg -i input_1080p.mp4 -c:v libx264 -preset ultrafast -crf 18 -c:a aac -b:a 192k output_web.mp4
+
+# Command 2: High-quality render with inefficient filter chain
+ffmpeg -i input.mp4 -vf "scale=1920:1080,overlay=watermark.png,scale=1280:720,fade=in:0:30" -c:v libx264 -preset veryslow -crf 15 output_hq.mp4
+
+# Command 3: Batch processing command that's taking forever
+ffmpeg -i large_4k_video.mp4 -c:v libx265 -preset veryslow -crf 20 -c:a copy output_compressed.mp4
+
+# Command 4: Audio re-encoding when not needed
+ffmpeg -i video_with_aac_audio.mp4 -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k output.mp4
+
+# Command 5: Missing thread optimization
+ffmpeg -i input.mp4 -c:v libx264 -preset medium -crf 23 output.mp4
+
+# Specific questions:
+# 1. Which preset should we use as default for VOILIA web renders?
+# 2. Is H.265 worth the extra encoding time on CPU-only VPS?
+# 3. How can we speed up the 4K video processing?
+# 4. Should we use two-pass encoding for better quality?
