@@ -1,0 +1,18 @@
+# Git (largest directory - 984KB)
+.git/
+
+# Claude Code internal files (928KB)
+.claude/agents/system-prompt-backups/
+.claude/agents/backups/
+
+# Python cache (if any)
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets
+.env
+.env.local
+
+# Logs
+*.log
