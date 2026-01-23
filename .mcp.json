@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "genius-orchestrator": {
+      "command": "/root/llmowner-backend/mcp/genius_orchestrator_wrapper.sh",
+      "args": [],
+      "instructions": "Genius Orchestrator with 79 tools: mission planning, agent routing, snap memory, session intelligence. Use search_genius_tools() to discover tools. Primary orchestration hub."
+    }
+  }
+}
