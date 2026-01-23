@@ -1,5 +1,10 @@
 {
   "mcpServers": {
+    "snap-memory": {
+      "command": "/home/llmowner/snap-memory-mcp/wrapper.sh",
+      "args": [],
+      "instructions": "Real-time error learning system. Use BEFORE risky operations: mcp__snap-memory__get_snap_tips('video rendering'). AFTER fixing errors: mcp__snap-memory__record_solution(). Thompson Sampling balances proven solutions (85%) with experiments (15%). 4 tools: get_snap_tips, record_error, record_solution, search_learnings."
+    },
     "genius-orchestrator": {
       "command": "/root/llmowner-backend/mcp/genius_orchestrator_wrapper.sh",
       "args": [],
