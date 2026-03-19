@@ -143,6 +143,25 @@ mcp__snap-memory__record_solution({"error_pattern": "...", "solution": "...", "s
 ```
 This ensures: Voilia agents see global + voilia learnings, NOT llmowner/stayproperties internals.
 
+## Claude Code v2.1.79
+
+**Context & Performance:**
+- **1M context window** for Opus 4.6 — full render logs and FFmpeg output fit in context (v2.1.75)
+- **Opus 4.6 max output: 64k tokens** — longer code generation for render scripts (v2.1.77)
+- **`/context`** — check context bloat from large render outputs (v2.1.74)
+- **`/effort low|medium|high`** — adjust model effort mid-session (v2.1.76)
+
+**Workflow:**
+- **`/plan <description>`** — e.g., `/plan optimize Ken Burns pipeline` starts plan mode immediately (v2.1.72)
+- **`/loop 5m /check`** — monitor render jobs on interval (v2.1.71)
+- **`/copy N`** — copy Nth-latest response (v2.1.77)
+- **`lsof`, `ss`, `pgrep`** auto-approved — no permission prompts for diagnostics (v2.1.72)
+
+**Agent & Hooks:**
+- **`SendMessage({to: agentId})`** to continue agents (v2.1.77)
+- **`SessionEnd` hooks** fire correctly on `/resume` session switches (v2.1.79)
+- **Agent `effort`, `maxTurns`, `disallowedTools` frontmatter** in agent definitions (v2.1.78)
+
 ## Current Tasks (Dynamic - Place Last for Cache Efficiency)
 - Quality monitoring
 - Template optimization
